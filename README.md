@@ -1,4 +1,4 @@
-# 🚀 Project Name: [ Ez Finance]
+# 🚀 Project Name: [ DeNova Finance]
 
 An advanced Decentralized Finance (DeFi) platform built to provide secure, transparent, and efficient financial services without intermediaries.
 
