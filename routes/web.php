@@ -8,4 +8,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('articles',ArticleController::class);
+// روش 1: فقط این دو متد عمومی بدون میدل ور امنیت هستند
+Route::resource('articles', ArticleController::class)->only(['index', 'show']);
+Route::resource('articles', ArticleController::class)->only(['create', 'edit' , "store" , "destroy"])->middleware('auth');
+
