@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -54,5 +55,9 @@ class User extends Authenticatable
     public function balances()
     {
     return $this->hasMany(UserBalance::class);
+    }
+    public function poolContributions()
+    {
+    return $this->hasMany(PoolContribution::class);
     }
 }

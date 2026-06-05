@@ -10,15 +10,14 @@ class UserBalanceSeeder extends Seeder
 {
     public function run(): void
     {
-        $tokens = Token::all();
         $user = \App\Models\User::first();
         if ($user) {
+            $tokens = Token::all();
             foreach ($tokens as $token) {
-                UserBalance::create([
-                    'user_id' => $user->id,
-                    'token_id' => $token->id,
-                    'balance' => 1000, // مقدار زیاد برای تست
-                ]);
+                UserBalance::firstOrCreate(
+                    ['user_id' => $user->id, 'token_id' => $token->id],
+                    ['balance' => 1000]
+                );
             }
         }
     }
