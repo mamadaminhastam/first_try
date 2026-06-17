@@ -7,6 +7,7 @@ use App\Http\Controllers\LiquidityPoolController;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/tokens', [\App\Http\Controllers\Admin\TokenController::class, 'index'])->name('tokens.index');
     Route::delete('/tokens/{token}', [\App\Http\Controllers\Admin\TokenController::class, 'destroy'])->name('tokens.destroy');

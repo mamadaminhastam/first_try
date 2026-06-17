@@ -121,18 +121,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* سیاره کوچک */
-        .planet {
-            position: absolute;
-            top: 10%;
-            left: 5%;
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(255,215,0,0.4);
-            animation: float 6s ease-in-out infinite;
-        }
+      
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
@@ -158,6 +147,7 @@
         .top-links a:hover {
             color: #7c3aed;
         }
+   
     </style>
 </head>
 <body>
