@@ -10,21 +10,21 @@ use Illuminate\Support\Facades\Auth;
 
 class LiquidityPoolController extends Controller
 {
-    // نمایش لیست همه استخرها
+    
     public function index()
     {
         $pools = LiquidityPool::with(['tokenA', 'tokenB'])->paginate(10);
         return view('pools.index', compact('pools'));
     }
 
-    // فرم ایجاد استخر جدید (فقط ادمین، ولی فعلاً همه)
+    
     public function create()
     {
         $tokens = Token::orderBy('symbol')->get();
         return view('pools.create', compact('tokens'));
     }
 
-    // ذخیره استخر جدید
+   
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -33,7 +33,7 @@ class LiquidityPoolController extends Controller
             'fee_percent' => 'nullable|numeric|min:0|max:100'
         ]);
 
-        // جلوگیری از ایجاد استخر تکراری (با ترتیب یکسان)
+        
         $exists = LiquidityPool::where(function($query) use ($validated) {
             $query->where('token_a_id', $validated['token_a_id'])
                   ->where('token_b_id', $validated['token_b_id']);
@@ -55,7 +55,7 @@ class LiquidityPoolController extends Controller
         return redirect()->route('pools.index')->with('success', 'استخر نقدینگی با موفقیت ایجاد شد.');
     }
 
-    // نمایش یک استخر خاص + وضعیت کاربر
+    
     public function show(LiquidityPool $pool)
     {
         $userContribution = null;
@@ -68,13 +68,13 @@ class LiquidityPoolController extends Controller
         return view('pools.show', compact('pool', 'userContribution'));
     }
 
-    // افزودن نقدینگی (نمایش فرم)
+    
     public function addLiquidityForm(LiquidityPool $pool)
     {
         return view('pools.add-liquidity', compact('pool'));
     }
 
-    // پردازش افزودن نقدینگی
+   
     public function addLiquidity(Request $request, LiquidityPool $pool)
     {
        
@@ -88,13 +88,13 @@ class LiquidityPoolController extends Controller
         $amountA = $request->amount_a;
         $amountB = $request->amount_b;
 
-        // دریافت موجودی کاربر
+        
         $balanceA = \App\Models\UserBalance::where('user_id', $user->id)
             ->where('token_id', $pool->token_a_id)->first();
         $balanceB = \App\Models\UserBalance::where('user_id', $user->id)
             ->where('token_id', $pool->token_b_id)->first();
 
-        // بررسی موجودی کافی
+       
         if (!$balanceA || $balanceA->balance < $amountA) {
             return back()->with('error', "موجودی ناکافی {$pool->tokenA->symbol}");
         }
@@ -102,7 +102,7 @@ class LiquidityPoolController extends Controller
             return back()->with('error', "موجودی ناکافی {$pool->tokenB->symbol}");
         }
 
-        // محاسبه LP token
+        
         if ($pool->total_lp_tokens == 0) {
             $lpTokens = sqrt($amountA * $amountB);
         } else {
@@ -111,13 +111,13 @@ class LiquidityPoolController extends Controller
             $lpTokens = min($shareA, $shareB);
         }
 
-        // بروزرسانی استخر
+        
         $pool->reserve_a += $amountA;
         $pool->reserve_b += $amountB;
         $pool->total_lp_tokens += $lpTokens;
         $pool->save();
 
-        // ثبت سهم کاربر
+        
         $contribution = PoolContribution::firstOrNew([
             'user_id' => $user->id,
             'liquidity_pool_id' => $pool->id,
@@ -125,7 +125,7 @@ class LiquidityPoolController extends Controller
         $contribution->lp_tokens += $lpTokens;
         $contribution->save();
 
-        // کسر موجودی کاربر
+        
         $balanceA->balance -= $amountA;
         $balanceA->save();
         $balanceB->balance -= $amountB;
@@ -135,7 +135,7 @@ class LiquidityPoolController extends Controller
         }
         public function destroy(LiquidityPool $pool)
 {
-    // حذف تمام مشارکت‌های مرتبط
+    
     $pool->contributions()->delete();
     $pool->delete();
 

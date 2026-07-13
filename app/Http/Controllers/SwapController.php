@@ -30,11 +30,11 @@ class SwapController extends Controller
         $tokenTo   = Token::findOrFail($request->token_to);
         $amountFrom = $request->amount;
 
-        // محاسبه نرخ (ساده: بر اساس قیمت دلاری هر توکن)
+        
         $rate = $tokenFrom->price_usd / $tokenTo->price_usd;
         $amountTo = $amountFrom * $rate;
 
-        // بررسی موجودی کاربر (شبیه‌سازی)
+       
         $balance = UserBalance::where('user_id', $user->id)
                               ->where('token_id', $tokenFrom->id)
                               ->first();
@@ -43,11 +43,11 @@ class SwapController extends Controller
             return back()->with('error', 'موجودی ناکافی است.');
         }
 
-        // کاهش موجودی token_from
+       
         $balance->balance -= $amountFrom;
         $balance->save();
 
-        // افزایش موجودی token_to (یا ایجاد رکورد جدید)
+        
         $toBalance = UserBalance::firstOrNew([
             'user_id' => $user->id,
             'token_id' => $tokenTo->id
@@ -55,7 +55,7 @@ class SwapController extends Controller
         $toBalance->balance += $amountTo;
         $toBalance->save();
 
-        // ثبت تراکنش
+      
         $transaction = Transaction::create([
             'user_id'          => $user->id,
             'token_from_id'    => $tokenFrom->id,

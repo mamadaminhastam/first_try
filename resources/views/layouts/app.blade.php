@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,6 +15,7 @@
             background-color: #0b0f19;
             overflow-x: hidden;
         }
+
         #stars-canvas {
             position: fixed;
             top: 0;
@@ -22,18 +24,28 @@
             height: 100%;
             z-index: -1;
         }
+
         .star {
             position: absolute;
             background: white;
             border-radius: 50%;
             animation: twinkle 2s infinite alternate;
         }
+
         @keyframes twinkle {
-            0% { opacity: 0.2; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.3); }
+            0% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
         }
     </style>
 </head>
+
 <body>
     <div id="stars-canvas"></div>
 
@@ -49,13 +61,13 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('swap.index') ? 'active' : '' }}" href="{{ route('swap.index') }}">
-                                <i class="fas fa-exchange-alt me-1"></i> Swap
+                            <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('swap.history') ? 'active' : '' }}" href="{{ route('swap.history') }}">
-                                <i class="fas fa-history me-1"></i> History
+                            <a class="nav-link {{ request()->routeIs('swap.index') ? 'active' : '' }}" href="{{ route('swap.index') }}">
+                                <i class="fas fa-exchange-alt me-1"></i> Swap
                             </a>
                         </li>
                         <li class="nav-item">
@@ -63,40 +75,48 @@
                                 <i class="fas fa-water me-1"></i> Pools
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('swap.history') ? 'active' : '' }}" href="{{ route('swap.history') }}">
+                                <i class="fas fa-history me-1"></i> History
+                            </a>
+                        </li>
+
+
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}"><i class="fas fa-user-plus me-1"></i> Register</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}"><i class="fas fa-user-plus me-1"></i> Register</a>
+                        </li>
+
                         @else
-                            @if(Auth::user()->role === 'admin')
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-crown me-1"></i> Admin
+                        @if(Auth::user()->role === 'admin')
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-crown me-1"></i> Admin
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-dark">
+                                <a class="dropdown-item" href="{{ route('admin.tokens.index') }}">Manage Tokens</a>
+                            </div>
+                        </li>
+                        @endif
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt me-1"></i> Logout
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-dark">
-                                    <a class="dropdown-item" href="{{ route('admin.tokens.index') }}">Manage Tokens</a>
-                                </div>
-                            </li>
-                            @endif
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <i class="fas fa-sign-out-alt me-1"></i> Logout
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
                         @endguest
                     </ul>
                 </div>
@@ -125,4 +145,5 @@
         }
     </script>
 </body>
+
 </html>

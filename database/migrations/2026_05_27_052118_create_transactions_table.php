@@ -17,8 +17,8 @@ return new class extends Migration
             $table->decimal('amount_to', 30, 10);
             $table->decimal('rate', 20, 8);
             $table->string('transaction_hash')->nullable(); // شبیه‌سازی هش تراکنش
-            $table->string('type')->default('swap'); // swap, liquidity, stake
-            $table->string('status')->default('completed'); // completed, pending, failed
+            $table->string('type')->default('swap'); 
+            $table->string('status')->default('completed');
             $table->timestamps();
         });
     }
