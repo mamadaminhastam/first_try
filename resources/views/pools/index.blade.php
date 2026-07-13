@@ -12,9 +12,27 @@
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+    <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form action="{{ route('pools.index') }}" method="GET" class="d-flex">
+                <input type="text" name="search" class="form-control form-control-sm me-2"
+                    style="height: 30px; font-size: 0.8rem;"
+                    placeholder="Search pool by token..."
+                    value="{{ request('search') }}">
+                <button type="submit" class="btn btn-sm btn-primary d-flex align-items-center justify-content-center"
+                    style="height: 30px; font-size: 1rem;">
+                    Search
+                </button>
+                @if(request('search'))
+                <a href="{{ route('pools.index') }}" class="btn btn-sm btn-outline-light ms-1 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-times"></i> Clear
+                </a>
+                @endif
+            </form>
+        </div>
+    </div>
     <div class="row">
         @forelse($pools as $pool)
         <div class="col-md-6 col-lg-4 mb-4">

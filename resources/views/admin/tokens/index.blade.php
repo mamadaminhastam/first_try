@@ -5,9 +5,25 @@
 @section('content')
 <div class="container">
     <h2 class="mb-4"><i class="fas fa-coins me-2"></i> Manage Tokens</h2>
-
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form action="{{ route('admin.tokens.index') }}" method="GET" class="d-flex">
+                <input type="text" name="search" class="form-control form-control-sm me-2"
+                    placeholder="Search by name or symbol..."
+                    value="{{ request('search') }}">
+                <button type="submit" class="btn btn-sm btn-primary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                @if(request('search'))
+                <a href="{{ route('admin.tokens.index') }}" class="btn btn-sm btn-outline-light ms-1">
+                    <i class="fas fa-times"></i> Clear
+                </a>
+                @endif
+            </form>
+        </div>
+    </div>
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+    <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
     <div class="table-responsive">
@@ -25,9 +41,9 @@
                 @foreach($tokens as $token)
                 <tr>
                     <td>
-                        <img src="{{ asset('icons/tokens/' . strtolower($token->symbol) . '.svg') }}" 
-                             onerror="this.onerror=null;this.src=fallbackIcon;"
-                             width="24" height="24" alt="{{ $token->symbol }}" style="vertical-align: middle;">
+                        <img src="{{ asset('icons/tokens/' . strtolower($token->symbol) . '.svg') }}"
+                            onerror="this.onerror=null;this.src=fallbackIcon;"
+                            width="24" height="24" alt="{{ $token->symbol }}" style="vertical-align: middle;">
                     </td>
                     <td>{{ $token->name }}</td>
                     <td><span class="badge bg-info">{{ $token->symbol }}</span></td>

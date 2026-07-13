@@ -8,9 +8,20 @@ use Illuminate\Http\Request;
 
 class TokenController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tokens = Token::orderBy('symbol')->paginate(20);
+        $query = Token::orderBy('symbol');
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('symbol', 'like', "%{$search}%");
+            });
+        }
+
+        $tokens = $query->paginate(20)->appends($request->query());
+
         return view('admin.tokens.index', compact('tokens'));
     }
 

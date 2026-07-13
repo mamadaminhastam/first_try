@@ -10,10 +10,25 @@ use Illuminate\Support\Facades\Auth;
 
 class LiquidityPoolController extends Controller
 {
-    
-    public function index()
+
+    public function index(Request $request)
     {
-        $pools = LiquidityPool::with(['tokenA', 'tokenB'])->paginate(10);
+        $query = LiquidityPool::with(['tokenA', 'tokenB']);
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('tokenA', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('symbol', 'like', "%{$search}%");
+                })->orWhereHas('tokenB', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('symbol', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        $pools = $query->paginate(10)->appends($request->query());
         return view('pools.index', compact('pools'));
     }
 

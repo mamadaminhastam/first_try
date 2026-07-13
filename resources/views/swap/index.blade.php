@@ -43,7 +43,7 @@
                         <label class="form-label small mb-1">Amount</label>
                         <div class="input-group input-group-sm">
                             <input type="number" step="any" name="amount" class="form-control" placeholder="0.0" required>
-                            <span class="input-group-text">Tokens</span>
+                            
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Swap</button>

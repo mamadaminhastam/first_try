@@ -40,7 +40,8 @@ class SwapController extends Controller
                               ->first();
 
         if (!$balance || $balance->balance < $amountFrom) {
-            return back()->with('error', 'موجودی ناکافی است.');
+            return back()->with('error', 'موجودی ناکافی است.')
+                ->with('snackbar', 'Insufficient balance!');
         }
 
        
