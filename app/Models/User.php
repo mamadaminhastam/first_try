@@ -49,15 +49,20 @@ class User extends Authenticatable
     }
     public function transactions()
     {
-    return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class);
     }
 
     public function balances()
     {
-    return $this->hasMany(UserBalance::class);
+        return $this->hasMany(UserBalance::class);
     }
     public function poolContributions()
     {
-    return $this->hasMany(PoolContribution::class);
+        return $this->hasMany(PoolContribution::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(\App\Models\PoolLike::class);
     }
 }

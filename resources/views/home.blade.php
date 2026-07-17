@@ -39,5 +39,36 @@
                 link="#" />
         </div>
     </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">My Token Balances</div>
+                <div class="card-body">
+                    @php
+                    $balances = \App\Models\UserBalance::where('user_id', Auth::id())
+                    ->where('balance', '>', 0)
+                    ->with('token')
+                    ->get();
+                    @endphp
+
+                    @if($balances->isEmpty())
+                    <p class="text-secondary">شما هیچ توکنی ندارید.</p>
+                    @else
+                    <div class="list-group">
+                        @foreach($balances as $b)
+                        <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                            <div>
+                                <strong>{{ $b->token->symbol }}</strong>
+                                <div class="text-secondary small">{{ $b->token->name }}</div>
+                            </div>
+                            <div class="fw-bold">{{ number_format($b->balance, 6) }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

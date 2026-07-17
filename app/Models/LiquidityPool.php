@@ -10,8 +10,12 @@ class LiquidityPool extends Model
     use HasFactory;
 
     protected $fillable = [
-        'token_a_id', 'token_b_id', 'reserve_a', 'reserve_b',
-        'total_lp_tokens', 'fee_percent'
+        'token_a_id',
+        'token_b_id',
+        'reserve_a',
+        'reserve_b',
+        'total_lp_tokens',
+        'fee_percent'
     ];
 
     protected $casts = [
@@ -34,5 +38,16 @@ class LiquidityPool extends Model
     public function contributions()
     {
         return $this->hasMany(PoolContribution::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(PoolLike::class);
+    }
+
+    public function isLikedBy($user)
+    {
+        if (!$user) return false;
+        return $this->likes()->where('user_id', $user->id)->exists();
     }
 }

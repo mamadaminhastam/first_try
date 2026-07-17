@@ -72,6 +72,7 @@
                     @else
                     <p class="text-secondary">No liquidity provided yet.</p>
                     @endif
+                    
 
                     {{-- دکمه‌ها: ادمین دو دکمه کنار هم، کاربر عادی فقط Add Liquidity --}}
                     @auth

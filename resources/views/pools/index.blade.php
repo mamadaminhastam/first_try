@@ -52,9 +52,23 @@
                         <div class="col-6">Fee:</div>
                         <div class="col-6 text-end">{{ $pool->fee_percent }}%</div>
                     </div>
-                    <a href="{{ route('pools.show', $pool) }}" class="btn btn-outline-light btn-sm mt-3 w-100">
-                        View Pool <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{{ route('pools.show', $pool) }}" class="btn btn-outline-light btn-sm flex-grow-1">
+                            View Pool <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                        <div class="like-widget"
+                            data-pool-id="{{ $pool->id }}"
+                            data-liked="{{ auth()->check() && $pool->isLikedBy(auth()->user()) ? 'true' : 'false' }}"
+                            data-count="{{ $pool->likes_count ?? 0 }}"
+                            style="min-width:56px; display:flex; align-items:center; justify-content:center;">
+                            <noscript>
+                                <form method="POST" action="{{ route('pools.like', $pool) }}">
+                                    @csrf
+                                    <button class="btn btn-outline-light btn-sm" type="submit">❤ {{ $pool->likes_count ?? 0 }}</button>
+                                </form>
+                            </noscript>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

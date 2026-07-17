@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8">
@@ -9,41 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('css/swap-theme.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* پس‌زمینه ستاره‌ها */
-        body {
-            background-color: #0b0f19;
-            overflow-x: hidden;
-        }
 
-        #stars-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
 
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
-        }
-
-        @keyframes twinkle {
-            0% {
-                opacity: 0.2;
-                transform: scale(1);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1.3);
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -61,13 +28,13 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
-                                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                            <a class="nav-link {{ request()->routeIs('swap.index') ? 'active' : '' }}" href="{{ route('swap.index') }}">
+                                <i class="fas fa-exchange-alt me-1"></i> Swap
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('swap.index') ? 'active' : '' }}" href="{{ route('swap.index') }}">
-                                <i class="fas fa-exchange-alt me-1"></i> Swap
+                            <a class="nav-link {{ request()->routeIs('swap.history') ? 'active' : '' }}" href="{{ route('swap.history') }}">
+                                <i class="fas fa-history me-1"></i> History
                             </a>
                         </li>
                         <li class="nav-item">
@@ -76,13 +43,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('swap.history') ? 'active' : '' }}" href="{{ route('swap.history') }}">
-                                <i class="fas fa-history me-1"></i> History
+                            <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
                             </a>
                         </li>
-
-
                     </ul>
+
                     <ul class="navbar-nav ms-auto">
                         @guest
                         <li class="nav-item">
@@ -91,7 +57,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('register') }}"><i class="fas fa-user-plus me-1"></i> Register</a>
                         </li>
-
                         @else
                         @if(Auth::user()->role === 'admin')
                         <li class="nav-item dropdown">
@@ -130,7 +95,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ایجاد ستاره‌های متحرک
+        // stars animation
         const starsContainer = document.getElementById('stars-canvas');
         for (let i = 0; i < 120; i++) {
             const star = document.createElement('div');
@@ -143,6 +108,55 @@
             star.style.animationDelay = Math.random() * 2 + 's';
             starsContainer.appendChild(star);
         }
+    </script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script>
+        document.querySelectorAll('.like-widget').forEach(el => {
+            const poolId = el.dataset.poolId;
+            const initialLiked = el.dataset.liked === 'true';
+            const initialCount = parseInt(el.dataset.count || '0');
+
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        liked: initialLiked,
+                        count: initialCount,
+                        loading: false
+                    };
+                },
+                methods: {
+                    toggle() {
+                        if (this.loading) return;
+                        this.loading = true;
+                        fetch(`/pools/${poolId}/like`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({})
+                        }).then(r => {
+                            if (!r.ok) throw r;
+                            return r.json();
+                        }).then(data => {
+                            this.liked = data.liked;
+                            this.count = data.count;
+                        }).catch(() => {
+                            alert('خطا در ارسال درخواست. لطفا وارد شوید و دوباره تلاش کنید.');
+                        }).finally(() => this.loading = false);
+                    }
+                },
+                template: `
+                    <button :class="['btn btn-sm', liked ? 'btn-primary' : 'btn-outline-light']" @click.prevent="toggle" :disabled="loading">
+                        <i class="fas fa-heart me-1"></i>
+                        <span class="ms-1">@{{ count }}</span>
+                    </button>
+                `
+            });
+
+            app.mount(el);
+        });
     </script>
 </body>
 
