@@ -41,7 +41,7 @@
             let tbody = document.getElementById('transactions-body');
             // loader element removed; we don't show a separate loader UI
             let currentPage = parseInt(tbody.dataset.currentPage || '1');
-            let hasMore = @json($transactions->hasMorePages());
+            
 
             function appendHtml(html) {
                 const tmp = document.createElement('tbody');
