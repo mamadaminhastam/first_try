@@ -63,6 +63,82 @@
     100% { transform: translateY(0) scale(1); opacity: 0.6 }
 }
 
+/* Shooting star */
+.shooting-star {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.6));
+    box-shadow: 0 0 8px rgba(255,255,255,0.9);
+    z-index: 0;
+    pointer-events: none;
+    transform: translate3d(0,0,0);
+    animation: shoot 1200ms linear forwards;
+}
+
+@keyframes shoot {
+    from { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+    to { opacity: 0; transform: translate3d(1200px, -200px, 0) scale(0.8); }
+}
+
+/* Like count pulse */
+.count-pulse {
+    animation: pop .45s ease;
+}
+@keyframes pop {
+    0% { transform: scale(1); opacity: 0.6 }
+    50% { transform: scale(1.18); opacity: 1 }
+    100% { transform: scale(1); opacity: 1 }
+}
+
+/* Searchable select styles */
+.searchable-select { position: relative; }
+.searchable-select .search-input { width: 100%; }
+.searchable-select .options { position: absolute; z-index: 1050; left: 0; right: 0; max-height: 200px; overflow:auto; background: var(--bg-card); border:1px solid var(--border-color); border-radius:8px; margin-top:6px; }
+.searchable-select .options div { padding:8px 10px; cursor:pointer; color: var(--text-primary); }
+.searchable-select .options div:hover { background: var(--bg-secondary); }
+
+/* History table header dark */
+.table-head-custom th { background-color: var(--bg-secondary) !important; color: var(--text-secondary) !important; border-bottom:1px solid var(--border-color); }
+.table.table-striped > tbody > tr,
+.table.table-hover > tbody > tr,
+.table > tbody > tr {
+    background-color: var(--bg-card) !important;
+}
+.table.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(28,33,40,0.95) !important;
+}
+.table.table-striped > tbody > tr:nth-of-type(even) {
+    background-color: rgba(22,27,34,0.9) !important;
+}
+.table.table-striped > tbody > tr > td,
+.table.table-hover > tbody > tr > td,
+.table > tbody > tr > td {
+    border-color: rgba(255,255,255,0.08) !important;
+}
+.table-responsive,
+.table-responsive .table {
+    background-color: transparent !important;
+}
+
+/* Pools like button stable layout */
+.like-widget button {
+    min-width: 72px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem;
+    white-space: nowrap;
+}
+.like-widget .btn-sm {
+    font-size: 0.82rem;
+}
+.like-widget .like-count {
+    display: inline-block;
+    min-width: 18px;
+}
+
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
@@ -221,7 +297,7 @@ body {
 
 /* متن‌های کم‌رنگ مثل توضیحات */
 .text-secondary {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary) 
 }
 
 /* رنگ لیبل‌ها و checkboxها */

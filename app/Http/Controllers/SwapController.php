@@ -30,25 +30,25 @@ class SwapController extends Controller
         $tokenTo   = Token::findOrFail($request->token_to);
         $amountFrom = $request->amount;
 
-        
+
         $rate = $tokenFrom->price_usd / $tokenTo->price_usd;
         $amountTo = $amountFrom * $rate;
 
-       
+
         $balance = UserBalance::where('user_id', $user->id)
-                              ->where('token_id', $tokenFrom->id)
-                              ->first();
+            ->where('token_id', $tokenFrom->id)
+            ->first();
 
         if (!$balance || $balance->balance < $amountFrom) {
             return back()->with('error', 'موجودی ناکافی است.')
                 ->with('snackbar', 'Insufficient balance!');
         }
 
-       
+
         $balance->balance -= $amountFrom;
         $balance->save();
 
-        
+
         $toBalance = UserBalance::firstOrNew([
             'user_id' => $user->id,
             'token_id' => $tokenTo->id
@@ -56,7 +56,7 @@ class SwapController extends Controller
         $toBalance->balance += $amountTo;
         $toBalance->save();
 
-      
+
         $transaction = Transaction::create([
             'user_id'          => $user->id,
             'token_from_id'    => $tokenFrom->id,
@@ -74,10 +74,18 @@ class SwapController extends Controller
 
     public function history()
     {
-        $transactions = Auth::user()->transactions()
-                                   ->with(['tokenFrom', 'tokenTo'])
-                                   ->latest()
-                                   ->paginate(10);
+        $query = Auth::user()->transactions()->with(['tokenFrom', 'tokenTo'])->latest();
+
+        $filter = request('filter');
+        if ($filter === 'today') {
+            $query->whereDate('created_at', now()->toDateString());
+        } elseif ($filter === 'week') {
+            $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+        } elseif ($filter === 'month') {
+            $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+        }
+
+        $transactions = $query->paginate(10)->appends(request()->query());
         return view('swap.history', compact('transactions'));
     }
 }

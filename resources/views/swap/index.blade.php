@@ -11,39 +11,36 @@
             </div>
             <div class="card-body p-3">
                 @if(session('success'))
-                    <div class="alert alert-success py-1 px-2 small mb-2">{{ session('success') }}</div>
+                <div class="alert alert-success py-1 px-2 small mb-2">{{ session('success') }}</div>
                 @endif
                 @if(session('error'))
-                    <div class="alert alert-danger py-1 px-2 small mb-2">{{ session('error') }}</div>
+                <div class="alert alert-danger py-1 px-2 small mb-2">{{ session('error') }}</div>
                 @endif
                 <form action="{{ route('swap.perform') }}" method="POST">
                     @csrf
                     <div class="mb-2">
                         <label class="form-label small mb-1">From</label>
-                        <select name="token_from" class="form-select form-select-sm" required>
-                            <option value="">Select token</option>
-                            @foreach($tokens as $token)
-                                <option value="{{ $token->id }}">{{ $token->symbol }} - {{ $token->name }}</option>
-                            @endforeach
-                        </select>
+                        <div id="token-from" class="searchable-select" data-tokens='@json($tokens)'>
+                            <input type="text" class="form-control search-input" placeholder="Search token..." autocomplete="off">
+                            <input type="hidden" name="token_from">
+                            <div class="options d-none"></div>
+                        </div>
                     </div>
                     <div class="text-center my-1">
                         <i class="fas fa-arrow-down text-secondary"></i>
                     </div>
                     <div class="mb-2">
                         <label class="form-label small mb-1">To</label>
-                        <select name="token_to" class="form-select form-select-sm" required>
-                            <option value="">Select token</option>
-                            @foreach($tokens as $token)
-                                <option value="{{ $token->id }}">{{ $token->symbol }} - {{ $token->name }}</option>
-                            @endforeach
-                        </select>
+                        <div id="token-to" class="searchable-select" data-tokens='@json($tokens)'>
+                            <input type="text" class="form-control search-input" placeholder="Search token..." autocomplete="off">
+                            <input type="hidden" name="token_to">
+                            <div class="options d-none"></div>
+                        </div>
                     </div>
                     <div class="mb-2">
                         <label class="form-label small mb-1">Amount</label>
                         <div class="input-group input-group-sm">
-                            <input type="number" step="any" name="amount" class="form-control" placeholder="0.0" required>
-                            
+                            <input type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" name="amount" class="form-control amount-input" placeholder="0.0" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Swap</button>

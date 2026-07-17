@@ -111,6 +111,64 @@
     </script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script>
+        // initialize searchable selects on swap page
+        function initSearchable(selectRoot) {
+            const container = selectRoot;
+            const tokens = JSON.parse(container.dataset.tokens || '[]');
+            const input = container.querySelector('.search-input');
+            const hidden = container.querySelector('input[type=hidden]');
+            const options = container.querySelector('.options');
+
+            function render(matches) {
+                options.innerHTML = matches.map(t => `<div data-id="${t.id}" data-symbol="${t.symbol}">${t.symbol} - ${t.name}</div>`).join('');
+                options.classList.toggle('d-none', matches.length === 0);
+            }
+
+            input.addEventListener('input', e => {
+                const q = e.target.value.trim().toLowerCase();
+                const matches = tokens.filter(t => t.symbol.toLowerCase().startsWith(q) || t.name.toLowerCase().includes(q));
+                render(matches.slice(0, 50));
+            });
+
+            options.addEventListener('click', e => {
+                const item = e.target.closest('div[data-id]');
+                if (!item) return;
+                hidden.value = item.dataset.id;
+                input.value = item.dataset.symbol;
+                options.classList.add('d-none');
+            });
+
+            document.addEventListener('click', e => {
+                if (!container.contains(e.target)) options.classList.add('d-none');
+            });
+        }
+
+        // mount searchable selects if present
+        document.querySelectorAll('.searchable-select').forEach(initSearchable);
+
+        document.querySelectorAll('.amount-input').forEach(input => {
+            input.addEventListener('input', e => {
+                const cleaned = e.target.value
+                    .replace(/[٠-٩]/g, d => String.fromCharCode(48 + d.charCodeAt(0) - 0x0660))
+                    .replace(/[۰-۹]/g, d => String.fromCharCode(48 + d.charCodeAt(0) - 0x06f0))
+                    .replace(/,/g, '.')
+                    .replace(/[^0-9.]/g, '');
+                e.target.value = cleaned;
+            });
+        });
+
+        function maybeShoot() {
+            if (Math.random() < 0.08) {
+                const s = document.createElement('div');
+                s.className = 'shooting-star';
+                s.style.left = (Math.random() * 40 + 10) + '%';
+                s.style.top = (Math.random() * 60 + 10) + 'vh';
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 1500);
+            }
+        }
+        setInterval(maybeShoot, 3500);
+
         document.querySelectorAll('.like-widget').forEach(el => {
             const poolId = el.dataset.poolId;
             const initialLiked = el.dataset.liked === 'true';
