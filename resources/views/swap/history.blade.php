@@ -28,23 +28,66 @@
                     <th>Date</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($transactions as $tx)
-                <tr>
-                    <td><span class="badge bg-secondary">{{ $tx->tokenFrom->symbol }}</span></td>
-                    <td><span class="badge bg-success">{{ $tx->tokenTo->symbol }}</span></td>
-                    <td>{{ $tx->amount_from }}</td>
-                    <td>{{ $tx->amount_to }}</td>
-                    <td>{{ $tx->rate }}</td>
-                    <td>{{ $tx->created_at->format('Y-m-d H:i') }}</td>
-                </tr>
-                @endforeach
+            <tbody id="transactions-body" data-current-page="{{ $transactions->currentPage() }}">
+                @include('swap._transactions_rows', ['transactions' => $transactions])
             </tbody>
         </table>
     </div>
-    <div class="d-flex justify-content-center">
-        {{ $transactions->links() }}
-    </div>
+
+
+    <script>
+        (function() {
+            let loading = false;
+            let tbody = document.getElementById('transactions-body');
+            // loader element removed; we don't show a separate loader UI
+            let currentPage = parseInt(tbody.dataset.currentPage || '1');
+            let hasMore = @json($transactions->hasMorePages());
+
+            function appendHtml(html) {
+                const tmp = document.createElement('tbody');
+                tmp.innerHTML = html;
+                // move children
+                Array.from(tmp.children).forEach(node => tbody.appendChild(node));
+            }
+
+            async function loadNext() {
+                if (loading || !hasMore) return;
+                loading = true;
+                const nextPage = currentPage + 1;
+                try {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('page', nextPage);
+                    const res = await fetch(url.toString(), {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    if (!res.ok) throw new Error('Network error');
+                    const data = await res.json();
+                    if (data.html) {
+                        appendHtml(data.html);
+                        currentPage = data.currentPage;
+                        hasMore = data.hasMore;
+                        // no loader element to hide
+                    }
+                } catch (e) {
+                    console.error(e);
+                } finally {
+                    loading = false;
+                    // nothing to hide
+                }
+            }
+
+            window.addEventListener('scroll', () => {
+                if (!hasMore || loading) return;
+                const scrolled = window.scrollY + window.innerHeight;
+                const near = document.body.scrollHeight - 300;
+                if (scrolled >= near) loadNext();
+            });
+
+            // no loader element
+        })();
+    </script>
     @endif
 </div>
 @endsection

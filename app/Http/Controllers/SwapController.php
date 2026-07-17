@@ -72,7 +72,7 @@ class SwapController extends Controller
         return redirect()->route('swap.history')->with('success', 'تبادل با موفقیت انجام شد.');
     }
 
-    public function history()
+    public function history(Request $request)
     {
         $query = Auth::user()->transactions()->with(['tokenFrom', 'tokenTo'])->latest();
 
@@ -86,6 +86,16 @@ class SwapController extends Controller
         }
 
         $transactions = $query->paginate(10)->appends(request()->query());
+
+        if ($request->ajax()) {
+            $html = view('swap._transactions_rows', compact('transactions'))->render();
+            return response()->json([
+                'html' => $html,
+                'hasMore' => $transactions->hasMorePages(),
+                'currentPage' => $transactions->currentPage(),
+            ]);
+        }
+
         return view('swap.history', compact('transactions'));
     }
 }
