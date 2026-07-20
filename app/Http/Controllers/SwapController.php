@@ -11,11 +11,17 @@ use Illuminate\Support\Str;
 
 class SwapController extends Controller
 {
+    
     public function index()
     {
-        $tokens = Token::all();
+        $tokens = Token::all()->map(function ($token) {
+            $token->icon_url = asset('icons/tokens/' . strtolower($token->symbol) . '.svg');
+            return $token;
+        });
+
         return view('swap.index', compact('tokens'));
     }
+    
 
     public function swap(Request $request)
     {

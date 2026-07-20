@@ -377,3 +377,59 @@ select option {
     border-color: #3fb950;
     color: #d1f7d1;
 }
+/* ---- Price Ticker (Infinite Scroll) ---- */
+.price-ticker-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(22, 27, 34, 0.95);
+    border-top: 1px solid var(--border-color);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    overflow: hidden;
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.price-ticker {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker-scroll 120s linear infinite;
+    /* سرعت حرکت (هرچه بیشتر، آهسته‌تر) */
+    width: max-content;
+    /* اجازه بده محتوا هرچقدر خواست پهن بشه */
+}
+
+/* انیمیشن: از 0 تا 50%- حرکت می‌کنه چون محتوا ۵ برابر تکرار شده، ۵۰٪ یک دور کامل ایجاد می‌کنه */
+@keyframes ticker-scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.price-ticker-item {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 24px;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.price-ticker-item .symbol {
+    color: var(--accent);
+    margin-right: 6px;
+    font-weight: 600;
+}
+
+.price-ticker-item .price {
+    color: var(--green);
+    margin-left: 4px;
+}

@@ -7,10 +7,12 @@ use App\Http\Controllers\LiquidityPoolController;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::get('/locale/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'fa'])) {
         session(['locale' => $locale]);
     }
+
     return redirect()->back();
 })->name('locale.switch');
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {

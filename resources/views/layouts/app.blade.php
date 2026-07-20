@@ -88,8 +88,8 @@
                                 <a class="dropdown-item" href="{{ route('profile.show') }}">
                                     <i class="fas fa-user-circle me-1"></i> {{ __('Profile') }}
                                 </a>
-                                
-                                
+
+
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -119,7 +119,12 @@
             @yield('content')
         </main>
     </div>
-
+    <!-- Live Price Ticker -->
+    <div class="price-ticker-wrapper">
+        <div class="price-ticker" id="price-ticker">
+            <!-- آیتم‌ها با جاوااسکریپت پر می‌شوند -->
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // stars animation
@@ -147,7 +152,15 @@
             const options = container.querySelector('.options');
 
             function render(matches) {
-                options.innerHTML = matches.map(t => `<div data-id="${t.id}" data-symbol="${t.symbol}">${t.symbol} - ${t.name}</div>`).join('');
+                options.innerHTML = matches.map(t => {
+                    let iconHtml = '';
+                    if (t.icon_url) {
+                        iconHtml = `<img src="${t.icon_url}" width="20" height="20" style="vertical-align:middle;margin-right:6px;" onerror="this.onerror=null;this.src='/icons/tokens/generic.svg';">`;
+                    }
+                    return `<div data-id="${t.id}" data-symbol="${t.symbol}">
+                    ${iconHtml}${t.symbol} - ${t.name}
+                </div>`;
+                }).join('');
                 options.classList.toggle('d-none', matches.length === 0);
             }
 
@@ -242,6 +255,59 @@
 
             app.mount(el);
         });
+    </script>
+    <script>
+        const tickerEl = document.getElementById('price-ticker');
+        const API_URL = '/api/token-prices';
+
+        async function fetchAndRenderTicker() {
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error('Status ' + res.status);
+                const tokens = await res.json();
+                if (!tokens.length) {
+                    tickerEl.innerHTML = '<span class="price-ticker-item">No tokens</span>';
+                    return;
+                }
+
+                // ساخت HTML برای یک بار
+                const singleRunHtml = tokens.map(t => {
+                    const price = parseFloat(t.price_usd).toFixed(2);
+                    return `<div class="price-ticker-item">
+                            <img src="${t.icon_url}" width="16" height="16" style="vertical-align:middle;margin-right:4px;" onerror="this.onerror=null;this.src='/icons/tokens/generic.svg';">
+                            <span class="symbol">${t.symbol}</span>
+                            <span class="price">$${price}</span>
+                        </div>`;
+                }).join('');
+
+                // تکرار ۵ بار برای پر کردن کامل نوار (تعداد رو می‌تونی کم/زیاد کنی)
+                const repeatedHtml = (singleRunHtml + singleRunHtml + singleRunHtml + singleRunHtml + singleRunHtml);
+                tickerEl.innerHTML = repeatedHtml;
+
+            } catch (err) {
+                console.error('Ticker error:', err);
+                tickerEl.innerHTML = '<span class="price-ticker-item" style="color:red;">Failed to load prices</span>';
+            }
+        }
+
+        fetchAndRenderTicker();
+
+        // بروزرسانی قیمت‌ها هر ۳۰ ثانیه
+        setInterval(async () => {
+            try {
+                const res = await fetch(API_URL);
+                const tokens = await res.json();
+                const priceElements = document.querySelectorAll('.price-ticker-item .price');
+                // چون چندین بار تکرار شده، با ایندکس کار می‌کنیم
+                tokens.forEach((t, i) => {
+                    const price = parseFloat(t.price_usd).toFixed(2);
+                    // بروزرسانی تمام المان‌های متناظر (با تکرارهای مختلف)
+                    for (let j = i; j < priceElements.length; j += tokens.length) {
+                        priceElements[j].textContent = '$' + price;
+                    }
+                });
+            } catch (e) {}
+        }, 30000);
     </script>
 </body>
 
