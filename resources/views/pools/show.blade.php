@@ -11,7 +11,7 @@
                 <div class="card-header">
                     <i class="fas fa-chart-line me-2"></i>
                     <span class="badge bg-info">{{ $pool->tokenA->symbol }}</span> /
-                    <span class="badge bg-warning text-dark">{{ $pool->tokenB->symbol }}</span> Chart
+                    <span class="badge bg-warning text-dark">{{ $pool->tokenB->symbol }}</span> {{ __('Chart') }}
                 </div>
                 <div class="card-body p-0">
                     <!-- TradingView Widget BEGIN -->
@@ -46,35 +46,34 @@
                         <span class="badge bg-info">{{ $pool->tokenA->symbol }}</span> /
                         <span class="badge bg-warning text-dark">{{ $pool->tokenB->symbol }}</span>
                     </span>
-                    <span class="badge bg-secondary">Fee {{ $pool->fee_percent }}%</span>
+                    <span class="badge bg-secondary">{{ __('Fee') }} {{ $pool->fee_percent }}%</span>
                 </div>
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-md-6 mb-3">
                             <div class="bg-dark p-3 rounded-3 text-center">
-                                <div class="text-secondary small">Total {{ $pool->tokenA->symbol }}</div>
+                                <div class="text-secondary small">{{ __('Total') }} {{ $pool->tokenA->symbol }}</div>
                                 <div class="fw-bold fs-5">{{ number_format($pool->reserve_a, 4) }}</div>
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <div class="bg-dark p-3 rounded-3 text-center">
-                                <div class="text-secondary small">Total {{ $pool->tokenB->symbol }}</div>
+                                <div class="text-secondary small">{{ __('Total') }} {{ $pool->tokenB->symbol }}</div>
                                 <div class="fw-bold fs-5">{{ number_format($pool->reserve_b, 4) }}</div>
                             </div>
                         </div>
                     </div>
-                    <h5>Your Liquidity</h5>
+                    <h5>{{ __('Your Liquidity') }}</h5>
                     @if($userContribution)
                     <div class="bg-dark p-3 rounded-3 mb-3">
-                        <span>LP Tokens: <strong>{{ number_format($userContribution->lp_tokens, 6) }}</strong></span>
-                        <span class="ms-3">Share: <strong>{{ $pool->total_lp_tokens > 0 ? number_format(($userContribution->lp_tokens / $pool->total_lp_tokens) * 100, 2) : 0 }}%</strong></span>
+                        <span>{{ __('LP Tokens') }}: <strong>{{ number_format($userContribution->lp_tokens, 6) }}</strong></span>
+                        <span class="ms-3">{{ __('Share') }}: <strong>{{ $pool->total_lp_tokens > 0 ? number_format(($userContribution->lp_tokens / $pool->total_lp_tokens) * 100, 2) : 0 }}%</strong></span>
                     </div>
                     @else
-                    <p class="text-secondary">No liquidity provided yet.</p>
+                    <p class="text-secondary">{{ __('No liquidity provided yet.') }}</p>
                     @endif
-                    
 
-                    {{-- دکمه‌ها: ادمین دو دکمه کنار هم، کاربر عادی فقط Add Liquidity --}}
+                    {{-- دکمه‌ها --}}
                     @auth
                     @if(Auth::user()->role === 'admin')
                     <div class="row mt-3">
@@ -83,26 +82,26 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger w-100">
-                                    <i class="fas fa-trash me-1"></i> Delete Pool
+                                    <i class="fas fa-trash me-1"></i> {{ __('Delete Pool') }}
                                 </button>
                             </form>
                         </div>
                         <div class="col-6">
                             <a href="{{ route('pools.addLiquidity', $pool) }}" class="btn btn-primary w-100">
-                                <i class="fas fa-plus me-1"></i> Add Liquidity
+                                <i class="fas fa-plus me-1"></i> {{ __('Add Liquidity') }}
                             </a>
                         </div>
                     </div>
                     @else
                     <a href="{{ route('pools.addLiquidity', $pool) }}" class="btn btn-primary w-100 mt-3">
-                        <i class="fas fa-plus me-1"></i> Add Liquidity
+                        <i class="fas fa-plus me-1"></i> {{ __('Add Liquidity') }}
                     </a>
                     @endif
                     @endauth
                 </div>
             </div>
             <div class="text-center text-secondary small mt-3">
-                <i class="fas fa-shield-alt me-1"></i> Assets are simulated — not real blockchain funds.
+                <i class="fas fa-shield-alt me-1"></i> {{ __('Assets are simulated — not real blockchain funds.') }}
             </div>
         </div>
     </div>

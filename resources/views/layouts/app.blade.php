@@ -9,8 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('css/swap-theme.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-
 </head>
 
 <body>
@@ -29,44 +27,56 @@
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('swap.index') ? 'active' : '' }}" href="{{ route('swap.index') }}">
-                                <i class="fas fa-exchange-alt me-1"></i> Swap
+                                <i class="fas fa-exchange-alt me-1"></i> {{ __('Swap') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('swap.history') ? 'active' : '' }}" href="{{ route('swap.history') }}">
-                                <i class="fas fa-history me-1"></i> History
+                                <i class="fas fa-history me-1"></i> {{ __('History') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('pools.*') ? 'active' : '' }}" href="{{ route('pools.index') }}">
-                                <i class="fas fa-water me-1"></i> Pools
+                                <i class="fas fa-water me-1"></i> {{ __('Pools') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
-                                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                                <i class="fas fa-tachometer-alt me-1"></i> {{ __('Dashboard') }}
                             </a>
                         </li>
                     </ul>
 
                     <ul class="navbar-nav ms-auto">
-
+                        {{-- Language Switcher --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-language me-1"></i> {{ app()->getLocale() === 'fa' ? 'فارسی' : 'English' }}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ route('locale.switch', 'en') }}">
+                                    🇬🇧 English
+                                </a>
+                                <a class="dropdown-item" href="{{ route('locale.switch', 'fa') }}">
+                                    🇮🇷 فارسی
+                                </a>
+                            </div>
+                        </li>
                         @guest
-                        
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
+                            <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-sign-in-alt me-1"></i> {{ __('Login') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}"><i class="fas fa-user-plus me-1"></i> Register</a>
+                            <a class="nav-link" href="{{ route('register') }}"><i class="fas fa-user-plus me-1"></i> {{ __('Register') }}</a>
                         </li>
                         @else
                         @if(Auth::user()->role === 'admin')
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-crown me-1"></i> Admin
+                                <i class="fas fa-crown me-1"></i> {{ __('Admin') }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-dark">
-                                <a class="dropdown-item" href="{{ route('admin.tokens.index') }}">Manage Tokens</a>
+                                <a class="dropdown-item" href="{{ route('admin.tokens.index') }}">{{ __('Manage Tokens') }}</a>
                             </div>
                         </li>
                         @endif
@@ -75,9 +85,24 @@
                                 <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ route('profile.show') }}">
+                                    <i class="fas fa-user-circle me-1"></i> {{ __('Profile') }}
+                                </a>
+                                
+                                
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                                    <i class="fas fa-sign-out-alt me-1"></i> {{ __('Logout') }}
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt me-1"></i> {{ __('Logout') }}
                                 </a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf

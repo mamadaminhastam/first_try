@@ -7,7 +7,12 @@ use App\Http\Controllers\LiquidityPoolController;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/locale/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fa'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('locale.switch');
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/tokens', [\App\Http\Controllers\Admin\TokenController::class, 'index'])->name('tokens.index');
     Route::delete('/tokens/{token}', [\App\Http\Controllers\Admin\TokenController::class, 'destroy'])->name('tokens.destroy');
@@ -16,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/home', function () {
         return view('home');
     })->name('home');
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     // Swap routes
     Route::get('/swap', [SwapController::class, 'index'])->name('swap.index');
     Route::post('/swap', [SwapController::class, 'swap'])->name('swap.perform');

@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', __('Dashboard'))
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Dashboard Overview</h2>
+    <h2 class="mb-4">{{ __('Dashboard Overview') }}</h2>
     <div class="row">
         <div class="col-md-3 mb-3">
             <x-card-box
                 icon="fas fa-coins"
-                title="Total Tokens"
+                title="{{ __('Total Tokens') }}"
                 value="{{ \App\Models\Token::count() }}"
                 color="primary"
                 link="{{ route('admin.tokens.index') }}" />
@@ -17,7 +17,7 @@
         <div class="col-md-3 mb-3">
             <x-card-box
                 icon="fas fa-water"
-                title="Liquidity Pools"
+                title="{{ __('Liquidity Pools') }}"
                 value="{{ \App\Models\LiquidityPool::count() }}"
                 color="success"
                 link="{{ route('pools.index') }}" />
@@ -25,7 +25,7 @@
         <div class="col-md-3 mb-3">
             <x-card-box
                 icon="fas fa-exchange-alt"
-                title="My Swaps"
+                title="{{ __('My Swaps') }}"
                 value="{{ \App\Models\Transaction::where('user_id', Auth::id())->count() }}"
                 color="info"
                 link="{{ route('swap.history') }}" />
@@ -33,16 +33,16 @@
         <div class="col-md-3 mb-3">
             <x-card-box
                 icon="fas fa-user"
-                title="Profile"
+                title="{{ __('Profile') }}"
                 value="{{ Auth::user()->name }}"
                 color="warning"
-                link="#" />
+                link="{{ route('profile.show') }}" />
         </div>
     </div>
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">My Token Balances</div>
+                <div class="card-header">{{ __('My Token Balances') }}</div>
                 <div class="card-body">
                     @php
                     $balances = \App\Models\UserBalance::where('user_id', Auth::id())
@@ -52,7 +52,7 @@
                     @endphp
 
                     @if($balances->isEmpty())
-                    <p class="text-secondary">شما هیچ توکنی ندارید.</p>
+                    <p class="text-secondary">{{ __('You have no tokens.') }}</p>
                     @else
                     <div class="list-group">
                         @foreach($balances as $b)
