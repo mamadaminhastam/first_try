@@ -20,6 +20,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('/tokens/{token}', [\App\Http\Controllers\Admin\TokenController::class, 'destroy'])->name('tokens.destroy');
 });
 Route::middleware('auth')->group(function () {
+    Route::redirect('/dashboard', '/home')->name('dashboard');
     Route::get('/home', function () {
         return view('home');
     })->name('home');
