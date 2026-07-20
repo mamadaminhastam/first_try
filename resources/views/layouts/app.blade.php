@@ -50,7 +50,9 @@
                     </ul>
 
                     <ul class="navbar-nav ms-auto">
+
                         @guest
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
                         </li>
